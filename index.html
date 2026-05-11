@@ -46,7 +46,7 @@
             background-color: #ff4d6d;
             color: white;
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            z-index: 999; /* Keeps Yes button on top */
+            z-index: 999;
         }
 
         #noBtn {
@@ -86,6 +86,9 @@
         const mainUI = document.getElementById('main-ui');
         const successMessage = document.getElementById('successMessage');
 
+        // --- YOUR REDIRECT LINK ---
+        const redirectUrl = "https://chormchhaiya268-source.github.io/Chhaiya-developer.github.io/";
+
         let yesScale = 1;
         let noClickCount = 0;
 
@@ -103,15 +106,20 @@
         noBtn.addEventListener('click', () => {
             noClickCount++;
             
-            // 1. Make the YES button grow
-            yesScale += 0.4;
+            // Check if this is the second click
+            if (noClickCount >= 2) {
+                window.location.href = redirectUrl;
+                return; // Stop the rest of the code from running
+            }
+
+            // 1. Make the YES button grow (only happens on 1st click now)
+            yesScale += 1.5; // Made it grow more significantly so it's obvious
             yesBtn.style.transform = `scale(${yesScale})`;
 
             // 2. Change the question text
-            const phraseIndex = Math.min(noClickCount - 1, phrases.length - 1);
-            questionText.innerText = phrases[phraseIndex];
+            questionText.innerText = phrases[0];
 
-            // 3. Move the NO button to a random spot so it's hard to click
+            // 3. Move the NO button to a random spot
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
             
@@ -123,13 +131,6 @@
         yesBtn.addEventListener('click', () => {
             mainUI.classList.add('hidden');
             successMessage.classList.remove('hidden');
-            
-            // Optional: Redirect to your portfolio after 3 seconds
-            /*
-            setTimeout(() => {
-                window.location.href = "https://chormchhaiya268-source.github.io/Chhaiya-developer.github.io/";
-            }, 3000);
-            */
         });
     </script>
 </body>
