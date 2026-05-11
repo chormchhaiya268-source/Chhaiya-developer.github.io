@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Quick Question...</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffeef8;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #ff4081;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+        }
+
+        #noBtn {
+            background-color: #9e9e9e;
+            color: white;
+            position: relative;
+        }
+
+        .success-message {
+            display: none;
+            color: #d81b60;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz">
+        <h1 id="question">Will you be my girlfriend? ❤️</h1>
+        <div class="container">
+            <button id="yesBtn">Of course, YES!</button>
+            <button id="noBtn">No I'm not</button>
+        </div>
+    </div>
+
+    <div id="celebration" class="success-message">
+        <h1>Happy happy happy hehehe I love you too!!!! 🥰✨</h1>
+        <p style="font-size: 5rem;">💖</p>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const quiz = document.getElementById('quiz');
+        const celebration = document.getElementById('celebration');
+        const question = document.getElementById('question');
+
+        let yesSize = 1.2;
+        let noSize = 1.2;
+        
+        const rejectionTexts = [
+            "Are you sure?",
+            "Think again!",
+            "Really?",
+            "Last chance...",
+            "You're breaking my heart!",
+            "I'll buy you snacks!",
+            "Pretty please?",
+            "Please say yes!"
+        ];
+        let textIndex = 0;
+
+        noBtn.addEventListener('click', () => {
+            // Make "Yes" bigger
+            yesSize += 0.5;
+            yesBtn.style.fontSize = yesSize + 'rem';
+            yesBtn.style.padding = (yesSize * 10) + 'px ' + (yesSize * 20) + 'px';
+
+            // Change "No" text
+            noBtn.innerText = rejectionTexts[textIndex];
+            textIndex = (textIndex + 1) % rejectionTexts.length;
+
+            // Optional: Move the "No" button randomly to make it harder to click
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
+
+        yesBtn.addEventListener('click', () => {
+            quiz.style.display = 'none';
+            celebration.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
