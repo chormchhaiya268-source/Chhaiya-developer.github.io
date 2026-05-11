@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Quick Question...</title>
+
     <style>
         body {
             display: flex;
@@ -13,15 +14,44 @@
             height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffeef8;
+            background: linear-gradient(135deg, #ffeef8, #ffd6ec, #ffc1e3);
             text-align: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            animation: floatUp linear infinite;
+            opacity: 0.8;
+            user-select: none;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         h1 {
             color: #d81b60;
             font-size: 2.5rem;
             margin-bottom: 30px;
+            z-index: 2;
         }
 
         .container {
@@ -30,6 +60,8 @@
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
+            z-index: 2;
+            position: relative;
         }
 
         button {
@@ -48,6 +80,10 @@
             box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
         }
 
+        #yesBtn:hover {
+            transform: scale(1.08);
+        }
+
         #noBtn {
             background-color: #9e9e9e;
             color: white;
@@ -58,6 +94,7 @@
             display: none;
             color: #d81b60;
             animation: heartBeat 1.5s infinite;
+            z-index: 2;
         }
 
         @keyframes heartBeat {
@@ -65,13 +102,45 @@
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+
+        #quiz, #celebration {
+            background: rgba(255,255,255,0.25);
+            padding: 40px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(255, 64, 129, 0.25);
+            z-index: 2;
+            position: relative;
+        }
     </style>
 </head>
+
 <body>
+
+    <script>
+        const emojis = ["❤️", "😍", "😘", "💖", "💕", "🥰"];
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 4 + 4) + "s";
+            heart.style.fontSize = (Math.random() * 25 + 20) + "px";
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 8000);
+        }
+
+        setInterval(createHeart, 250);
+    </script>
 
     <div id="quiz">
         <h1 id="question">Will you be my girlfriend? ❤️</h1>
-        <div class="container">
+
+        <div class="container" id="buttonArea">
             <button id="yesBtn">Of course, YES!</button>
             <button id="noBtn">No way</button>
         </div>
@@ -85,13 +154,13 @@
     <script>
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
+        const buttonArea = document.getElementById('buttonArea');
         const quiz = document.getElementById('quiz');
         const celebration = document.getElementById('celebration');
-        const question = document.getElementById('question');
 
         let yesSize = 1.2;
-        let noSize = 1.2;
-        
+        let textIndex = 0;
+
         const rejectionTexts = [
             "Are you sure?",
             "Think again!",
@@ -101,24 +170,26 @@
             "I'll buy you snacks!",
             "Pretty please?"
         ];
-        let textIndex = 0;
 
         noBtn.addEventListener('click', () => {
-            // Make "Yes" bigger
             yesSize += 0.5;
             yesBtn.style.fontSize = yesSize + 'rem';
             yesBtn.style.padding = (yesSize * 10) + 'px ' + (yesSize * 20) + 'px';
 
-            // Change "No" text
             noBtn.innerText = rejectionTexts[textIndex];
             textIndex = (textIndex + 1) % rejectionTexts.length;
 
-            // Optional: Move the "No" button randomly to make it harder to click
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            const areaRect = buttonArea.getBoundingClientRect();
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            const padding = 10;
+
+            const maxX = Math.max(padding, areaRect.width - btnWidth - padding);
+            const maxY = Math.max(padding, areaRect.height - btnHeight - padding);
+
             noBtn.style.position = 'absolute';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            noBtn.style.left = Math.random() * maxX + 'px';
+            noBtn.style.top = Math.random() * maxY + 'px';
         });
 
         yesBtn.addEventListener('click', () => {
@@ -126,5 +197,6 @@
             celebration.style.display = 'block';
         });
     </script>
+
 </body>
 </html>
