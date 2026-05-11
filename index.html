@@ -3,164 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I have a private question...</title>
+    <title>A Quick Question...</title>
     <style>
         body {
-            margin: 0;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 50%, #fff0f5 100%);
+            height: 100vh;
+            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
+            background-color: #ffeef8;
             text-align: center;
-            position: relative;
-        }
-
-        .heart-float {
-            position: absolute;
-            bottom: -50px;
-            color: #ffb6c1;
-            font-size: 1.5rem;
-            animation: float-around 5s infinite ease-in;
-            opacity: 0.8;
-            pointer-events: none;
-        }
-
-        @keyframes float-around {
-            0% { transform: translateY(0) scale(0.5) translateX(0); opacity: 0.8; }
-            100% { transform: translateY(-120vh) scale(1.5) translateX(var(--floating-x)); opacity: 0; }
+            overflow: hidden;
         }
 
         h1 {
-            color: #d63384;
+            color: #d81b60;
             font-size: 2.5rem;
-            margin-bottom: 2rem;
-            padding: 0 20px;
-            text-shadow: 0 2px 5px rgba(255, 182, 193, 0.5);
-            z-index: 10;
+            margin-bottom: 30px;
         }
 
-        .btn-container {
+        .container {
             display: flex;
             gap: 20px;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            flex-wrap: wrap;
         }
 
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
-            font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+            font-weight: bold;
         }
 
         #yesBtn {
-            background-color: #ff4d6d;
+            background-color: #ff4081;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            z-index: 1000;
-            transform-origin: center bottom;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
         }
 
         #noBtn {
-            background-color: #adb5bd;
+            background-color: #9e9e9e;
             color: white;
             position: relative;
         }
 
-        .hidden { display: none; }
+        .success-message {
+            display: none;
+            color: #d81b60;
+            animation: heartBeat 1.5s infinite;
+        }
 
-        #successMessage { color: #d63384; z-index: 10; }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
-    <div id="main-ui">
-        <h1 id="questionText">Som jui muy❤️</h1>
-        <div class="btn-container">
-            <button id="yesBtn">YES!</button>
-            <button id="noBtn">No</button>
+    <div id="quiz">
+        <h1 id="question">Will you be my girlfriend? ❤️</h1>
+        <div class="container">
+            <button id="yesBtn">Of course, YES!</button>
+            <button id="noBtn">No way</button>
         </div>
     </div>
 
-    <div id="successMessage" class="hidden">
-        <h1>Awww i love you too!!!!! ❤️🥰✨</h1>
-        <p style="font-size: 5rem; margin: 0; filter: drop-shadow(0 0 10px rgba(255, 20, 147, 0.5));">💖</p>
+    <div id="celebration" class="success-message">
+        <h1>Awww I love you too!!!! 🥰✨</h1>
+        <p style="font-size: 5rem;">💖</p>
     </div>
 
     <script>
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
-        const questionText = document.getElementById('questionText');
-        const mainUI = document.getElementById('main-ui');
-        const successMessage = document.getElementById('successMessage');
+        const quiz = document.getElementById('quiz');
+        const celebration = document.getElementById('celebration');
+        const question = document.getElementById('question');
 
-        const redirectUrl = "https://chhaiya-web.vercel.app/";
-
-        let yesScale = 1;
-        let noClickCount = 0;
-
-        // --- RANDOM "PLEASE" PHRASES ---
-        const pleasePhrases = [
-            "Please? 🥺",
-            "Pretty please with a cherry on top?",
-            "Think about the snacks I'll buy you!",
-            "I promise to be the best! 🌹",
-            "Don't be mean! Just say yes! ✨",
-            "I'll give you all my attention! 💖",
-            "You're breaking my heart... please?",
-            "Come on, look how big the YES button is!",
-            "I'll cook for you! (maybe) 🍕",
-            "Just click the pink one, it looks better!"
+        let yesSize = 1.2;
+        let noSize = 1.2;
+        
+        const rejectionTexts = [
+            "Are you sure?",
+            "Think again!",
+            "Really?",
+            "Last chance...",
+            "You're breaking my heart!",
+            "I'll buy you snacks!",
+            "Pretty please?"
         ];
-
-        function createHearts() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart-float');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            const randomX = (Math.random() - 0.5) * 40 + 'vw';
-            heart.style.setProperty('--floating-x', randomX);
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 5000); 
-        }
-        setInterval(createHearts, 300);
+        let textIndex = 0;
 
         noBtn.addEventListener('click', () => {
-            noClickCount++;
-            
-            if (noClickCount >= 3) {
-                window.location.href = redirectUrl;
-                return;
-            }
+            // Make "Yes" bigger
+            yesSize += 0.5;
+            yesBtn.style.fontSize = yesSize + 'rem';
+            yesBtn.style.padding = (yesSize * 10) + 'px ' + (yesSize * 20) + 'px';
 
-            // 1. Make YES button grow
-            yesScale += 1.8; 
-            yesBtn.style.transform = `scale(${yesScale})`;
+            // Change "No" text
+            noBtn.innerText = rejectionTexts[textIndex];
+            textIndex = (textIndex + 1) % rejectionTexts.length;
 
-            // 2. CHANGE TO A RANDOM PHRASE
-            const randomPhrase = pleasePhrases[Math.floor(Math.random() * pleasePhrases.length)];
-            questionText.innerText = randomPhrase;
-
-            // 3. Move NO button
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            // Optional: Move the "No" button randomly to make it harder to click
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             noBtn.style.position = 'absolute';
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         });
 
         yesBtn.addEventListener('click', () => {
-            mainUI.classList.add('hidden');
-            successMessage.classList.remove('hidden');
+            quiz.style.display = 'none';
+            celebration.style.display = 'block';
         });
     </script>
 </body>
