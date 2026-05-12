@@ -62,6 +62,8 @@
             flex-wrap: wrap;
             z-index: 2;
             position: relative;
+            min-height: 200px;
+            min-width: 300px;
         }
 
         button {
@@ -117,6 +119,12 @@
 
 <body>
 
+    <!-- Romantic Song -->
+    <!-- Put your mp3 file in same folder and rename it to perfect.mp3 -->
+    <audio id="bgMusic" loop>
+        <source src="perfect.mp3" type="audio/mp3">
+    </audio>
+
     <script>
         const emojis = ["❤️", "😍", "😘", "💖", "💕", "🥰"];
 
@@ -157,6 +165,7 @@
         const buttonArea = document.getElementById('buttonArea');
         const quiz = document.getElementById('quiz');
         const celebration = document.getElementById('celebration');
+        const music = document.getElementById('bgMusic');
 
         let yesSize = 1.2;
         let textIndex = 0;
@@ -194,8 +203,14 @@
         });
 
         yesBtn.addEventListener('click', () => {
+
+            // PLAY MUSIC
+            music.play();
+
+            // SHOW LOVE MESSAGE
             quiz.style.display = 'none';
             celebration.style.display = 'block';
+
         });
     </script>
 
